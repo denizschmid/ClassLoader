@@ -89,64 +89,31 @@
              ********************************************************************************/
             public function LoadClass( $ClassName, $Directory=NULL )
             {
-                
                 $ReadDir = ( $Directory==NULL ? $this->_baseDir : $Directory );
-                
+		
+                $ClassName = end(explode('\\', $ClassName));	
+		
+		
                 // Lade Datei im Basisverzeichnis
-                if(file_exists( "$ReadDir$ClassName$this->_suffix" ) )
+                if( file_exists( "$ReadDir/$ClassName$this->_suffix") )
                 {
-                    include "$ReadDir/$ClassName$this->_suffix";
+		    require_once "$ReadDir/$ClassName$this->_suffix";
                     return TRUE;
                 }
+		
                 // Falls keine gefunden wurde suche rekursiv in Unterverzeichnissen
                 // falls gewünscht.
                 elseif( $this->_recursive )
                 {
-                    foreach( $this->_GetDirectories($ReadDir) as $dir )
-                    {
-                        $this->LoadClass($ClassName, $dir);
+                    foreach( scandir($ReadDir) as $dir )
+                    {			
+			if( $dir === "." || $dir === ".." || !is_dir("$ReadDir/$dir") ) continue;
+                        $this->LoadClass($ClassName, "$ReadDir/$dir");
                     }
                 }
-                
-                print "Klasse '$ClassName' konnte nicht geladen werden";
+
                 return FALSE;
                 
             }
-            
-            /********************************************************************************
-             * @author	Deniz Schmid
-             * @descr	Liest alle Sub-Verzeichnisse eines Verzeichnisses aus.
-             *
-             * @crdate 	2015-03-29
-             *
-             * @param   string  Directory   Verzeichnis, das durchsucht werden soll.
-             * @return  array   Sub-Verzeichnisse
-             ********************************************************************************/
-            private function _GetDirectories( $Directory )
-            {
-                $Directories = array();
-                
-                if( !is_dir($Directory) ) 
-                {
-                    return $Directories; 
-                }
-                
-                
-                $handler = opendir( $Directory ); 
-                if( $handler )
-                {
-                    while( ($file = readdir( $handler )) !== false  )
-                    {
-                      
-                        if( is_dir( $file ) )
-                        {
-                            $Directories[] = $file;
-                        }
-                        
-                    }
-                }
-                return $Directories;
-            }
            
 	}
- ?>
