@@ -1,6 +1,13 @@
 # ClassLoader
 The ClassLoader provides an recursive autoloader which looks for class files in a directory and its subdirectories.
 
+##Installation
+Install this package with bower
+```bash
+  bower install denizschmid/ClassLoader
+```
+
+##Usage
 The constructor expects just one argument - this is the directory what the ClassLoader is looking for. The second and third arguments are optional and specify if the ClassLoader should run recursifly through the directories (default: true) and the suffix of the class files (default: .php). 
 
 ```php
